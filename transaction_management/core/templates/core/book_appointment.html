@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h2>Book Appointment</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="message">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="id_timeslot"><b>Time Slot:</b></label><br>
+      {{ form.timeslot }}
+    </div>
+    <div class="form-group">
+      <label for="id_purpose"><b>Purpose:</b></label><br>
+      {{ form.purpose }}
+    </div>
+    <br>
+    <button type="submit" class="btn">Request Appointment</button>
+  </form>
+
+  <h3>Your Appointments</h3>
+  <table>
+    <tr>
+      <th>Date/Time</th>
+      <th>Purpose</th>
+      <th>Status</th> 
+    </tr>
+    {% for a in appointments %}
+    <tr>
+      <td>{{ a.timeslot.start }}</td>
+      <td>{{ a.purpose }}</td>
+      <td class="status-{{ a.status|lower }}">{{ a.status }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">No appointments yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .btn {
+    background: #006400;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background: #e7f9e7;
+    border: 1px solid #b2d8b2;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  .status-pending { color: orange; }
+  .status-approved { color: green; }
+  .status-declined { color: red; }
+</style>
+{% endblock %}

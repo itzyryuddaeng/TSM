@@ -10,9 +10,12 @@ import random
 from datetime import timedelta
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import AppointmentForms
 from django.contrib import messages
-from .models import Appointment
+from .models import Appointment, TimeSlot
+from .forms import AppointmentForm
+from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def generate_otp_code(length=6):
     return "".join(str(random.randint(0,9)) for _ in range(length))
@@ -245,6 +248,45 @@ def update_appointment_status(request, appointment_id, status):
     appointment.save()
     messages.success(request, f"Appointment {status.lower()} successfully")
     return redirect("registrar_appointments")
+
+
+class TimeSlotListView(ListView):
+    model = TimeSlot
+    template_name = "core/available_schedules.html"
+    context_object_name = "timeslots"
+
+    def get_queryset(self):
+        return [ts for ts in TimeSlot.objects.filter(is_active=True).order_by('start') if ts.available()]
+
+class BookAppointmentView(LoginRequiredMixin, CreateView):
+    model = Appointment
+    form_class = AppointmentForm
+    template_name = "core/book_appointment.html"
+    success_url = reverse_lazy('core:student_appointments')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        # prevent double booking and capacity race condition (simple check)
+        form.instance.student = self.request.user
+        ts = form.cleaned_data['timeslot']
+        if not ts.available():
+            form.add_error('timeslot', 'This timeslot is no longer available.')
+            return self.form_invalid(form)
+        # extra check: whether student already has an appointment at same time
+        if Appointment.objects.filter(student=self.request.user, timeslot=ts).exists():
+            form.add_error(None, 'You already have an appointment for this timeslot.')
+            return self.form_invalid(form)
+
+        response = super().form_valid(form)
+        messages.success(self.request, "Appointment requested. You will be notified when confirmed.")
+        return response
+
+def login_success(request):
+    return render(request, 'core/Login_Successfully.html')
 
 
 

@@ -2,7 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
 from django.core.exceptions import ValidationError
-from .models import Appointment
+from .models import Appointment, TimeSlot
+from django.utils import timezone
+
 YEAR_LEVEL_CHOICES = [
     ("1st Year", "1st Year"),
     ("2nd Year", "2nd Year"),
@@ -70,11 +72,31 @@ class OTPForm(forms.Form):
 
 
 # Creating the appointment form
-class AppointmentForms(forms.ModelForm):
+class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = ["purpose", "appointment_date", "appointment_time"]
+        fields = ['timeslot', 'purpose']
         widgets = {
-            "appointment_date": forms.DateInput(attrs={"type": "date"}),
-            "appointment_time": forms.TimeInput(attrs={"type": "time"})
+            'timeslot': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Select available time'
+            }),
+            'purpose': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter purpose of appointment'
+            })
         }
+        labels = {
+            'timeslot': 'Available Time Slots',
+            'purpose': 'Purpose of Visit'
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        # Filter to show only future active timeslots
+        if 'timeslot' in self.fields:
+            self.fields['timeslot'].queryset = TimeSlot.objects.filter(
+                is_active=True,
+                end__gt=timezone.now()
+            ).order_by('start')

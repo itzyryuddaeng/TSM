@@ -1,11 +1,12 @@
-
-
 from django.conf import settings #import wide project settings
 from django.contrib.auth.models import User #built-in user model for authentiction (such as username, email, password)
 from django.db import models #defining database models (e.g, tables, etc)
 import uuid #
 from datetime import datetime, timedelta #handling dates and time
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 
+User = get_user_model()
 
 #THis function allows for file uploads
 #defines for WHERE the uploaded files goes/stored in media as follows (media/ directory)
@@ -46,24 +47,52 @@ class OTP(models.Model):
         return f"OTP for {self.user.email} - {self.code}"
     
 
-class Appointment(models.Model):
-    STATUS_CHOICES = [
-        ("Pending", "Pending"),
-        ("Approved", "Approved"),
-        ("Declined", "Declined"),
-    ]
+class TimeSlot(models.Model):
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    capacity = models.PositiveIntegerField(default=1)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments")
-    purpose = models.CharField(max_length=255)
-    appointment_date = models.DateField()
-    appointment_time = models.TimeField()
-    remarks = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Pending")
-    created_at = models.DateTimeField(auto_now=True)
-
+    class Meta:
+        ordering = ['start']
 
     def __str__(self):
-        return f"{self.student.username} - {self.appointment_date} ({self.status})"
+        return f"{self.start:%Y-%m-%d %H:%M} — {self.end:%H:%M}"
+
+    def booked_count(self):
+        return self.appointments.filter(status__in=[Appointment.Status.PENDING, Appointment.Status.CONFIRMED]).count()
+
+    def available(self):
+        return self.is_active and (self.capacity - self.booked_count() > 0) and self.end > timezone.now()
+
+class Appointment(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        CONFIRMED = 'CONFIRMED', 'Confirmed'
+        CANCELLED = 'CANCELLED', 'Cancelled'
+        COMPLETED = 'COMPLETED', 'Completed'
+
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
+    timeslot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
+    purpose = models.CharField(max_length=255, blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('PENDING', 'Pending'),
+            ('APPROVED', 'Approved'),
+            ('DECLINED', 'Declined')
+        ],
+        default='PENDING'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'timeslot')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.student} - {self.timeslot} ({self.status})"
 
 
 

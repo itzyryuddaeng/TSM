@@ -1,7 +1,7 @@
 # this is the adminstration 
 
 from django.contrib import admin
-from .models import Profile, OTP
+from .models import Profile, OTP, TimeSlot, Appointment
 
 
 @admin.register(Profile)
@@ -21,3 +21,14 @@ class ProfileAdmin(admin.ModelAdmin):
     def get_email(self, obj):
         return obj.user.email
     get_email.short_description = "Email"
+
+
+@admin.register(TimeSlot)
+class TimeSlotAdmin(admin.ModelAdmin):
+    list_display = ('start', 'end', 'capacity', 'is_active', 'created_at')
+    list_filter = ('is_active',)
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ('student', 'timeslot', 'status', 'created_at')
+    list_filter = ('status',)

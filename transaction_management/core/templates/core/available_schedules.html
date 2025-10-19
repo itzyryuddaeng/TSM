@@ -1,0 +1,14 @@
+<!-- ... -->
+<h2>Available Schedules</h2>
+<ul>
+  {% for ts in timeslots %}
+    <li>
+      {{ ts.start|date:"Y-m-d H:i" }} — {{ ts.end|date:"H:i" }}
+      ({{ ts.capacity|default:1 }} slots, {{ ts.booked_count }} booked)
+      <a href="{% url 'core:book_appointment' %}?timeslot={{ ts.id }}">Book</a>
+    </li>
+  {% empty %}
+    <li>No available schedules.</li>
+  {% endfor %}
+</ul>
+<!-- ... -->
