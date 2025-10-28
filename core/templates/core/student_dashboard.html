@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-6 mt-10">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Welcome, {{ request.user.first_name }}!</h2>
+
+    {% if profile and not profile.is_approved_by_registrar %}
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
+            Your account is still pending registrar approval. You will be notified once verified.
+        </div>
+    {% else %}
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Appointment Access -->
+            <div class="p-4 bg-blue-50 rounded-lg shadow-md hover:shadow-lg transition">
+                <h3 class="font-semibold text-lg text-blue-700">Book Appointment</h3>
+                <p class="text-sm text-gray-600">Schedule a meeting with the registrar.</p>
+                <a href="{% url 'core:student_appointments' %}" class="text-blue-600 font-medium hover:underline">Go to Appointments →</a>
+            </div>
+
+            <!-- Certificate Access -->
+            <div class="p-4 bg-green-50 rounded-lg shadow-md hover:shadow-lg transition">
+                <h3 class="font-semibold text-lg text-green-700">Request Certificates</h3>
+                <p class="text-sm text-gray-600">Request registration form, good moral, or enrollment certificate.</p>
+                <a href="{% url 'core:certificate_request' %}" class="text-green-600 font-medium hover:underline">Go to Requests →</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <link rel="stylesheet" href="Style.css">
+    <script src="https://kit.fontawesome.com/cda339b82d.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="login">
+        <form id="registrationForm">
+            <h2>Sign Up</h2>
+
+            <div class="names left">
+                <input type="text" id="firstName" placeholder="First Name" required>
+            </div>
+
+            <div class="names right">
+                <input type="text" id="lastName" placeholder="Last Name" required>
+            </div>
+
+            <div class="inputBox">
+                <i class="fa-solid fa-user"></i>
+                <input id="email" placeholder="Email" required>
+            </div>
+
+            <div class="inputBox">
+                <i class="fa-solid fa-hashtag"></i>
+                <input type="number" id="StudentNumber" placeholder="Student Number" required>
+            </div>
+
+            <div class="inputBox">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required>
+                <div class="toggle">
+                    <button type="button" id="togglePassword"><i class="fa-regular fa-eye"></i></button>
+                </div>
+            </div>
+            
+            <div class="inputBox">
+                <i class="fa-solid fa-key"></i>
+                <input type="password" id="confirmPass" placeholder="Confirm Password" required>
+                <div class="toggle">
+                    <button type="button" id="toggleConfirmPassword"><i class="fa-regular fa-eye"></i></button>
+                </div>
+            </div>            
+
+            <div class="agree">
+                <input type="checkbox" value="agree" required> Agree to the
+                <a href="#" id="myBtn"><b>Terms and Condition</b></a>
+            </div>
+
+            <section id="terms_conditions">
+                <div id="myModalfooter2" class="modal"> 
+                    <div id="prodetails" class="section-p1 modal-content">
+                        <div class="single-pro-details1">
+                            <h2 style="text-align: center;" id="termsCondition">Terms and Conditions</h2>
+                            <br>
+                            <p>Effective Date: 2024-2025</p>
+                            <h3>1. Introduction</h3><br>
+                            <p>Welcome to SHOPatos! These terms and conditions outline the rules and regulations for the use of SHOPatos' website and the purchase of products from our store.</p>
+                            <h3>2. Acceptance of Terms</h3><br>
+                            <p>By accessing this website and purchasing our products, you agree to comply with and be bound by these terms and conditions.</p>
+                            <h3>3. Products and Services</h3><br>
+                            <p>SHOPatos offers a variety of shoes across different categories. All products are subject to availability.</p>
+                            <h3>4. Pricing and Payment</h3><br>
+                            <p>All prices are subject to change without notice. We accept various forms of payment.</p>
+                            <h3>5. Shipping and Delivery</h3><br>
+                            <p>We are not responsible for delays caused by unforeseen circumstances.</p>
+                            <h3>6. Returns and Refunds</h3><br>
+                            <p>Returns are accepted within 7 days of receipt.</p>
+                            <h3>7. Intellectual Property</h3><br>
+                            <p>All content is the property of SHOPatos.</p>
+                            <h3>8. Limitation of Liability</h3><br>
+                            <p>SHOPatos shall not be liable for any indirect or consequential damages.</p>
+                            <h3>9. Governing Law</h3><br>
+                            <p>These terms are governed by Philippine law.</p>
+                            <h3>10. Contact Us</h3><br>
+                            <p>Email: shopatos14344@gmail.com</p>
+                        </div>
+                        <span class="close" onclick="closeModal('myModalfooter2');">&times;</span>
+                    </div>
+                </div>
+            </section>
+
+            <br>
+
+            <div class="submit">
+                <input type="submit" id="mySubmit" value="Sign Up">
+            </div>
+
+            <div class="registration">
+                <p>Already have an account? <a href="login.html"><b>Sign in</b></a></p>
+            </div>
+        </form>    
+    </div>
+
+    <!-- ⚙️ ULTRA VISIBLE Registrar Dashboard Shortcut -->
+    <button 
+        id="registrarShortcut"
+        onclick="window.location.href='/registrar/dashboard/'"
+        style="
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: radial-gradient(circle at top left, #ff0066, #ffcc00);
+            color: white;
+            border: 4px solid white;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 36px;
+            font-weight: bold;
+            box-shadow: 0 0 30px #ff0066, 0 0 60px #ffcc00, 0 0 120px #ffffff;
+            cursor: pointer;
+            z-index: 999999;
+            animation: glowPulse 1.5s infinite alternate;
+        "
+        title="Go to Registrar Dashboard"
+    >
+        ⚙️
+    </button>
+
+    <style>
+    @keyframes glowPulse {
+        from {
+            box-shadow: 0 0 20px #ff0066, 0 0 40px #ffcc00;
+            transform: scale(1);
+        }
+        to {
+            box-shadow: 0 0 60px #ff0066, 0 0 100px #ffcc00;
+            transform: scale(1.15);
+        }
+    }
+    </style>
+
+    <script>
+        // Terms and Conditions modal behavior
+        var modal = document.getElementById("myModalfooter2");
+        var btn = document.getElementById("myBtn");
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Password toggle logic
+        var togglePassword = document.getElementById("togglePassword");
+        var password = document.getElementById("password");
+
+        togglePassword.addEventListener("click", function() {
+            const type = password.getAttribute("type") === "password" ? "text" : "password";
+            password.setAttribute("type", type);
+            this.querySelector("i").classList.toggle("fa-eye");
+            this.querySelector("i").classList.toggle("fa-eye-slash");
+        });
+
+        var toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+        var confirmPassword = document.getElementById("confirmPass");
+
+        toggleConfirmPassword.addEventListener("click", function() {
+            const type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
+            confirmPassword.setAttribute("type", type);
+            this.querySelector("i").classList.toggle("fa-eye");
+            this.querySelector("i").classList.toggle("fa-eye-slash");
+        });
+
+        // Registrar shortcut toggle (Ctrl + R)
+        document.addEventListener("keydown", function(event) {
+            if (event.ctrlKey && event.key.toLowerCase() === "r") {
+                const btn = document.getElementById("registrarShortcut");
+                btn.style.display = (btn.style.display === "none") ? "block" : "none";
+            }
+        });
+
+        // Always show it by default
+        document.getElementById("registrarShortcut").style.display = "block";
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="max-w-5xl mx-auto bg-white shadow-lg rounded-xl p-6 mt-6">
+  <h2 class="text-2xl font-semibold mb-4">Certificate Requests</h2>
+
+  <table class="min-w-full border border-gray-200">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="px-4 py-2 text-left">Student</th>
+        <th class="px-4 py-2 text-left">Certificate Type</th>
+        <th class="px-4 py-2 text-left">Purpose</th>
+        <th class="px-4 py-2 text-left">Status</th>
+        <th class="px-4 py-2 text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in certificates %}
+      <tr class="border-b hover:bg-gray-50">
+        <td class="px-4 py-2">{{ c.student.username }}</td>
+        <td class="px-4 py-2">{{ c.certificate_type }}</td>
+        <td class="px-4 py-2">{{ c.purpose }}</td>
+        <td class="px-4 py-2">{{ c.status }}</td>
+        <td class="px-4 py-2 text-center space-x-2">
+          <a href="{% url 'core:update_certificate_status' c.id 'Approved' %}" class="text-green-600 hover:underline">Approve</a>
+          <a href="{% url 'core:update_certificate_status' c.id 'Released' %}" class="text-blue-600 hover:underline">Release</a>
+          <a href="{% url 'core:update_certificate_status' c.id 'Rejected' %}" class="text-red-600 hover:underline">Reject</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center py-4 text-gray-500">No certificate requests found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

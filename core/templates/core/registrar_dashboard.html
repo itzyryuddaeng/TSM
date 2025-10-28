@@ -1,0 +1,960 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Records Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-processing { background: #dbeafe; color: #1e40af; }
+        .status-completed { background: #d1fae5; color: #065f46; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg border-b-4 border-blue-600">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-blue-600 p-2 rounded-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Academic Records System</h1>
+                        <p class="text-sm text-gray-600">Registrar Document Management Platform</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-gray-700">Maria Santos</p>
+                        <p class="text-xs text-gray-500">Senior Registrar</p>
+                    </div>
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        MS
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Navigation Tabs -->
+        <div class="bg-white rounded-xl shadow-lg mb-8">
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6">
+                    <button onclick="showTab('dashboard')" id="tab-dashboard" class="tab-button py-4 px-2 border-b-2 border-blue-600 text-blue-600 font-medium">
+                        Dashboard
+                    </button>
+                    <button onclick="showTab('requests')" id="tab-requests" class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        Document Requests
+                    </button>
+                    <button onclick="showTab('students')" id="tab-students" class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        Student Records
+                    </button>
+                    <button onclick="showTab('reports')" id="tab-reports" class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        Reports
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard-content" class="tab-content">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Pending Requests</p>
+                            <p class="text-3xl font-bold text-gray-900">24</p>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Processing</p>
+                            <p class="text-3xl font-bold text-gray-900">12</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Completed Today</p>
+                            <p class="text-3xl font-bold text-gray-900">8</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total This Month</p>
+                            <p class="text-3xl font-bold text-gray-900">156</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H9z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="bg-green-100 p-2 rounded-full">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">TOR completed for Juan Dela Cruz (ID: 2021-001234)</p>
+                            <p class="text-xs text-gray-500">2 minutes ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="bg-blue-100 p-2 rounded-full">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">New COR request from Maria Garcia (ID: 2022-005678)</p>
+                            <p class="text-xs text-gray-500">15 minutes ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="bg-yellow-100 p-2 rounded-full">
+                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">COG request requires verification - Roberto Santos (ID: 2020-009876)</p>
+                            <p class="text-xs text-gray-500">1 hour ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Requests Tab -->
+        <div id="requests-content" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-lg">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">Document Requests</h3>
+                        <div class="flex space-x-3">
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                <option>All Documents</option>
+                                <option>Certificate of Registration (COR)</option>
+                                <option>Transcript of Records (TOR)</option>
+                                <option>Certificate of Grades (COG)</option>
+                                <option>Diploma</option>
+                                <option>Good Moral Certificate</option>
+                            </select>
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                <option>All Status</option>
+                                <option>Pending</option>
+                                <option>Processing</option>
+                                <option>Completed</option>
+                                <option>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Requested</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="requests-table">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">REQ-2024-001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Juan Dela Cruz</div>
+                                        <div class="text-sm text-gray-500">ID: 2021-001234</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Transcript of Records (TOR)</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 15, 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full status-processing">Processing</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <button onclick="viewRequest('REQ-2024-001')" class="text-blue-600 hover:text-blue-900">View</button>
+                                    <button onclick="updateStatus('REQ-2024-001', 'completed')" class="text-green-600 hover:text-green-900">Complete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">REQ-2024-002</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Maria Garcia</div>
+                                        <div class="text-sm text-gray-500">ID: 2022-005678</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Certificate of Registration (COR)</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 16, 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full status-pending">Pending</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <button onclick="viewRequest('REQ-2024-002')" class="text-blue-600 hover:text-blue-900">View</button>
+                                    <button onclick="updateStatus('REQ-2024-002', 'processing')" class="text-yellow-600 hover:text-yellow-900">Process</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">REQ-2024-003</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Roberto Santos</div>
+                                        <div class="text-sm text-gray-500">ID: 2020-009876</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Certificate of Grades (COG)</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 14, 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full status-completed">Completed</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <button onclick="viewRequest('REQ-2024-003')" class="text-blue-600 hover:text-blue-900">View</button>
+                                    <button onclick="printDocument('REQ-2024-003')" class="text-purple-600 hover:text-purple-900">Print</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Records Tab -->
+        <div id="students-content" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-lg">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Student Records</h3>
+                            <div class="flex items-center space-x-2 text-sm text-gray-600" id="breadcrumb">
+                                <span>All Courses</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button onclick="goBack()" id="back-button" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-200 hidden">
+                                ← Back
+                            </button>
+                            <input type="text" placeholder="Search by name or ID..." class="border border-gray-300 rounded-lg px-4 py-2 text-sm w-64">
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">Search</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6" id="student-records-container">
+                    <!-- Courses View -->
+                    <div id="courses-view" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer" onclick="showYearLevels('BSCS')">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">BS Computer Science</h4>
+                                    <p class="text-sm text-gray-500">BSCS</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-medium">Total Students:</span> 245</p>
+                                <p><span class="font-medium">Active Students:</span> 198</p>
+                                <p><span class="font-medium">Year Levels:</span> 1st - 4th</p>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer" onclick="showYearLevels('BSBA')">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">BS Business Administration</h4>
+                                    <p class="text-sm text-gray-500">BSBA</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-medium">Total Students:</span> 189</p>
+                                <p><span class="font-medium">Active Students:</span> 156</p>
+                                <p><span class="font-medium">Year Levels:</span> 1st - 4th</p>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer" onclick="showYearLevels('BSE')">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">BS Engineering</h4>
+                                    <p class="text-sm text-gray-500">BSE</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-medium">Total Students:</span> 167</p>
+                                <p><span class="font-medium">Active Students:</span> 134</p>
+                                <p><span class="font-medium">Year Levels:</span> 1st - 4th</p>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer" onclick="showYearLevels('BSED')">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">BS Education</h4>
+                                    <p class="text-sm text-gray-500">BSED</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-medium">Total Students:</span> 123</p>
+                                <p><span class="font-medium">Active Students:</span> 98</p>
+                                <p><span class="font-medium">Year Levels:</span> 1st - 4th</p>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer" onclick="showYearLevels('BSN')">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">BS Nursing</h4>
+                                    <p class="text-sm text-gray-500">BSN</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-medium">Total Students:</span> 201</p>
+                                <p><span class="font-medium">Active Students:</span> 178</p>
+                                <p><span class="font-medium">Year Levels:</span> 1st - 4th</p>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer" onclick="showYearLevels('BSIT')">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">BS Information Technology</h4>
+                                    <p class="text-sm text-gray-500">BSIT</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-medium">Total Students:</span> 178</p>
+                                <p><span class="font-medium">Active Students:</span> 145</p>
+                                <p><span class="font-medium">Year Levels:</span> 1st - 4th</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Year Levels View -->
+                    <div id="years-view" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Sections View -->
+                    <div id="sections-view" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Students View -->
+                    <div id="students-view" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Content will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports-content" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Document Processing Statistics</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Certificate of Registration (COR)</span>
+                            <span class="font-semibold">45 processed</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Transcript of Records (TOR)</span>
+                            <span class="font-semibold">32 processed</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full" style="width: 53%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Certificate of Grades (COG)</span>
+                            <span class="font-semibold">28 processed</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-yellow-600 h-2 rounded-full" style="width: 47%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Diploma</span>
+                            <span class="font-semibold">15 processed</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-purple-600 h-2 rounded-full" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Monthly Performance</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-green-800">Average Processing Time</p>
+                                <p class="text-sm text-green-600">2.3 days</p>
+                            </div>
+                            <div class="text-green-600">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-blue-800">Completion Rate</p>
+                                <p class="text-sm text-blue-600">94.2%</p>
+                            </div>
+                            <div class="text-blue-600">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-purple-800">Student Satisfaction</p>
+                                <p class="text-sm text-purple-600">4.8/5.0</p>
+                            </div>
+                            <div class="text-purple-600">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">
+                            Generate Detailed Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Request Details -->
+    <div id="request-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800">Request Details</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6" id="modal-content">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+            
+            // Remove active state from all tabs
+            const tabs = document.querySelectorAll('.tab-button');
+            tabs.forEach(tab => {
+                tab.classList.remove('border-blue-600', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-content').classList.remove('hidden');
+            document.getElementById(tabName + '-content').classList.add('fade-in');
+            
+            // Activate selected tab
+            const activeTab = document.getElementById('tab-' + tabName);
+            activeTab.classList.remove('border-transparent', 'text-gray-500');
+            activeTab.classList.add('border-blue-600', 'text-blue-600');
+        }
+
+        // Request management functions
+        function viewRequest(requestId) {
+            const modal = document.getElementById('request-modal');
+            const content = document.getElementById('modal-content');
+            
+            // Sample request data
+            const requestData = {
+                'REQ-2024-001': {
+                    id: 'REQ-2024-001',
+                    student: 'Juan Dela Cruz',
+                    studentId: '2021-001234',
+                    document: 'Transcript of Records (TOR)',
+                    dateRequested: 'January 15, 2024',
+                    status: 'Processing',
+                    purpose: 'Job Application',
+                    copies: 2,
+                    notes: 'Urgent request for overseas employment'
+                }
+            };
+            
+            const request = requestData[requestId] || requestData['REQ-2024-001'];
+            
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Request ID</label>
+                            <p class="text-sm text-gray-900">${request.id}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full status-${request.status.toLowerCase()}">${request.status}</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Student Name</label>
+                            <p class="text-sm text-gray-900">${request.student}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Student ID</label>
+                            <p class="text-sm text-gray-900">${request.studentId}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Document Type</label>
+                            <p class="text-sm text-gray-900">${request.document}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Date Requested</label>
+                            <p class="text-sm text-gray-900">${request.dateRequested}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Purpose</label>
+                            <p class="text-sm text-gray-900">${request.purpose}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Number of Copies</label>
+                            <p class="text-sm text-gray-900">${request.copies}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Notes</label>
+                        <p class="text-sm text-gray-900">${request.notes}</p>
+                    </div>
+                    <div class="flex space-x-3 pt-4">
+                        <button onclick="updateStatus('${request.id}', 'processing')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                            Mark as Processing
+                        </button>
+                        <button onclick="updateStatus('${request.id}', 'completed')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                            Mark as Completed
+                        </button>
+                        <button onclick="printDocument('${request.id}')" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                            Print Document
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('request-modal').classList.add('hidden');
+            document.getElementById('request-modal').classList.remove('flex');
+        }
+
+        function updateStatus(requestId, newStatus) {
+            // Find the row and update the status
+            const rows = document.querySelectorAll('#requests-table tr');
+            rows.forEach(row => {
+                const idCell = row.querySelector('td:first-child');
+                if (idCell && idCell.textContent === requestId) {
+                    const statusCell = row.querySelector('.status-pending, .status-processing, .status-completed, .status-rejected');
+                    if (statusCell) {
+                        statusCell.className = `px-2 py-1 text-xs font-semibold rounded-full status-${newStatus}`;
+                        statusCell.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+                    }
+                }
+            });
+            
+            // Show success message
+            showNotification(`Request ${requestId} status updated to ${newStatus}`, 'success');
+            closeModal();
+        }
+
+        function printDocument(requestId) {
+            showNotification(`Document for ${requestId} sent to printer`, 'success');
+            closeModal();
+        }
+
+        function viewStudentRecord(studentId) {
+            showNotification(`Opening detailed record for student ${studentId}`, 'info');
+        }
+
+        function generateDocument(studentId) {
+            showNotification(`Document generation initiated for student ${studentId}`, 'success');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
+                type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+                'bg-blue-100 text-blue-800 border border-blue-200'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Student Records Navigation
+        let navigationStack = [];
+        
+        const courseNames = {
+            'BSCS': 'BS Computer Science',
+            'BSBA': 'BS Business Administration',
+            'BSE': 'BS Engineering',
+            'BSED': 'BS Education',
+            'BSN': 'BS Nursing',
+            'BSIT': 'BS Information Technology'
+        };
+
+        const sampleStudents = {
+            'BSCS-1-1': [
+                { id: '2024-001001', name: 'Juan Dela Cruz', status: 'Active', gpa: '3.75' },
+                { id: '2024-001002', name: 'Maria Santos', status: 'Active', gpa: '3.92' },
+                { id: '2024-001003', name: 'Pedro Garcia', status: 'Active', gpa: '3.45' },
+                { id: '2024-001004', name: 'Ana Rodriguez', status: 'Active', gpa: '3.88' },
+                { id: '2024-001005', name: 'Carlos Mendoza', status: 'Active', gpa: '3.67' }
+            ],
+            'BSCS-1-2': [
+                { id: '2024-001006', name: 'Sofia Reyes', status: 'Active', gpa: '3.55' },
+                { id: '2024-001007', name: 'Miguel Torres', status: 'Active', gpa: '3.78' },
+                { id: '2024-001008', name: 'Isabella Cruz', status: 'Active', gpa: '3.91' },
+                { id: '2024-001009', name: 'Diego Morales', status: 'Active', gpa: '3.42' }
+            ],
+            'BSCS-2-1': [
+                { id: '2023-001001', name: 'Carmen Flores', status: 'Active', gpa: '3.82' },
+                { id: '2023-001002', name: 'Roberto Silva', status: 'Active', gpa: '3.69' },
+                { id: '2023-001003', name: 'Lucia Vargas', status: 'Active', gpa: '3.95' },
+                { id: '2023-001004', name: 'Fernando Lopez', status: 'Active', gpa: '3.58' }
+            ]
+        };
+
+        function showYearLevels(courseCode) {
+            navigationStack.push({ view: 'courses', data: null });
+            
+            // Hide courses view
+            document.getElementById('courses-view').classList.add('hidden');
+            
+            // Show years view
+            const yearsView = document.getElementById('years-view');
+            yearsView.classList.remove('hidden');
+            yearsView.classList.add('fade-in');
+            
+            // Update breadcrumb
+            updateBreadcrumb(`All Courses > ${courseNames[courseCode]}`);
+            
+            // Show back button
+            document.getElementById('back-button').classList.remove('hidden');
+            
+            // Populate year levels
+            yearsView.innerHTML = '';
+            for (let year = 1; year <= 4; year++) {
+                const yearCard = document.createElement('div');
+                yearCard.className = 'border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer';
+                yearCard.onclick = () => showSections(courseCode, year);
+                
+                const studentCount = Math.floor(Math.random() * 50) + 30; // Random count between 30-80
+                const sectionCount = Math.ceil(studentCount / 25); // Assuming ~25 students per section
+                
+                yearCard.innerHTML = `
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-blue-600 font-bold text-lg">${year}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">${getOrdinal(year)} Year</h4>
+                            <p class="text-sm text-gray-500">${courseCode} - Year ${year}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p><span class="font-medium">Total Students:</span> ${studentCount}</p>
+                        <p><span class="font-medium">Active Students:</span> ${studentCount - Math.floor(Math.random() * 5)}</p>
+                        <p><span class="font-medium">Sections:</span> ${sectionCount}</p>
+                    </div>
+                `;
+                
+                yearsView.appendChild(yearCard);
+            }
+        }
+
+        function showSections(courseCode, year) {
+            navigationStack.push({ view: 'years', data: { courseCode } });
+            
+            // Hide years view
+            document.getElementById('years-view').classList.add('hidden');
+            
+            // Show sections view
+            const sectionsView = document.getElementById('sections-view');
+            sectionsView.classList.remove('hidden');
+            sectionsView.classList.add('fade-in');
+            
+            // Update breadcrumb
+            updateBreadcrumb(`All Courses > ${courseNames[courseCode]} > ${getOrdinal(year)} Year`);
+            
+            // Populate sections
+            sectionsView.innerHTML = '';
+            const sectionCount = Math.ceil((Math.floor(Math.random() * 50) + 30) / 25);
+            
+            for (let section = 1; section <= Math.max(3, sectionCount); section++) {
+                const sectionCard = document.createElement('div');
+                sectionCard.className = 'border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer';
+                sectionCard.onclick = () => showStudents(courseCode, year, section);
+                
+                const studentCount = Math.floor(Math.random() * 15) + 20; // 20-35 students per section
+                
+                sectionCard.innerHTML = `
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <span class="text-green-600 font-bold">${year}-${section}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Section ${year}-${section}</h4>
+                            <p class="text-sm text-gray-500">${courseCode} ${getOrdinal(year)} Year</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p><span class="font-medium">Students:</span> ${studentCount}</p>
+                        <p><span class="font-medium">Active:</span> ${studentCount - Math.floor(Math.random() * 3)}</p>
+                        <p><span class="font-medium">Average GPA:</span> ${(Math.random() * 1.5 + 2.5).toFixed(2)}</p>
+                    </div>
+                `;
+                
+                sectionsView.appendChild(sectionCard);
+            }
+        }
+
+        function showStudents(courseCode, year, section) {
+            navigationStack.push({ view: 'sections', data: { courseCode, year } });
+            
+            // Hide sections view
+            document.getElementById('sections-view').classList.add('hidden');
+            
+            // Show students view
+            const studentsView = document.getElementById('students-view');
+            studentsView.classList.remove('hidden');
+            studentsView.classList.add('fade-in');
+            
+            // Update breadcrumb
+            updateBreadcrumb(`All Courses > ${courseNames[courseCode]} > ${getOrdinal(year)} Year > Section ${year}-${section}`);
+            
+            // Get students for this section
+            const sectionKey = `${courseCode}-${year}-${section}`;
+            let students = sampleStudents[sectionKey];
+            
+            // If no predefined students, generate some
+            if (!students) {
+                students = generateRandomStudents(courseCode, year, section);
+            }
+            
+            // Populate students
+            const studentsContainer = studentsView.querySelector('.grid');
+            studentsContainer.innerHTML = '';
+            
+            students.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.className = 'border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow';
+                
+                const initials = student.name.split(' ').map(n => n[0]).join('');
+                const colors = ['blue', 'green', 'purple', 'red', 'indigo', 'pink'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                studentCard.innerHTML = `
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="w-12 h-12 bg-${color}-100 rounded-full flex items-center justify-center">
+                            <span class="text-${color}-600 font-semibold">${initials}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-900">${student.name}</h4>
+                            <p class="text-sm text-gray-500">ID: ${student.id}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p><span class="font-medium">Program:</span> ${courseNames[courseCode]}</p>
+                        <p><span class="font-medium">Year & Section:</span> ${year}-${section}</p>
+                        <p><span class="font-medium">Status:</span> <span class="text-green-600">${student.status}</span></p>
+                        <p><span class="font-medium">GPA:</span> ${student.gpa}</p>
+                    </div>
+                    <div class="mt-4 flex space-x-2">
+                        <button onclick="viewStudentRecord('${student.id}')" class="text-blue-600 text-sm hover:text-blue-800">View Record</button>
+                        <button onclick="generateDocument('${student.id}')" class="text-green-600 text-sm hover:text-green-800">Generate Doc</button>
+                    </div>
+                `;
+                
+                studentsContainer.appendChild(studentCard);
+            });
+        }
+
+        function generateRandomStudents(courseCode, year, section) {
+            const firstNames = ['Juan', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Sofia', 'Miguel', 'Isabella', 'Diego', 'Carmen', 'Roberto', 'Lucia', 'Fernando', 'Valentina', 'Alejandro'];
+            const lastNames = ['Dela Cruz', 'Santos', 'Garcia', 'Rodriguez', 'Mendoza', 'Reyes', 'Torres', 'Cruz', 'Morales', 'Flores', 'Silva', 'Vargas', 'Lopez', 'Herrera', 'Jimenez'];
+            
+            const students = [];
+            const studentCount = Math.floor(Math.random() * 10) + 20; // 20-30 students
+            
+            for (let i = 1; i <= studentCount; i++) {
+                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                const currentYear = new Date().getFullYear();
+                const enrollmentYear = currentYear - (year - 1);
+                
+                students.push({
+                    id: `${enrollmentYear}-${String(Math.floor(Math.random() * 900000) + 100000)}`,
+                    name: `${firstName} ${lastName}`,
+                    status: 'Active',
+                    gpa: (Math.random() * 1.5 + 2.5).toFixed(2)
+                });
+            }
+            
+            return students;
+        }
+
+        function goBack() {
+            if (navigationStack.length === 0) return;
+            
+            const previous = navigationStack.pop();
+            
+            // Hide all views
+            document.getElementById('courses-view').classList.add('hidden');
+            document.getElementById('years-view').classList.add('hidden');
+            document.getElementById('sections-view').classList.add('hidden');
+            document.getElementById('students-view').classList.add('hidden');
+            
+            if (previous.view === 'courses') {
+                document.getElementById('courses-view').classList.remove('hidden');
+                document.getElementById('courses-view').classList.add('fade-in');
+                updateBreadcrumb('All Courses');
+                document.getElementById('back-button').classList.add('hidden');
+            } else if (previous.view === 'years') {
+                showYearLevels(previous.data.courseCode);
+                navigationStack.pop(); // Remove the duplicate entry
+            } else if (previous.view === 'sections') {
+                showSections(previous.data.courseCode, previous.data.year);
+                navigationStack.pop(); // Remove the duplicate entry
+            }
+        }
+
+        function updateBreadcrumb(text) {
+            document.getElementById('breadcrumb').innerHTML = `<span>${text}</span>`;
+        }
+
+        function getOrdinal(num) {
+            const suffixes = ['th', 'st', 'nd', 'rd'];
+            const v = num % 100;
+            return num + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('request-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9848e762d71ffec3',t:'MTc1ODc4NjM0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

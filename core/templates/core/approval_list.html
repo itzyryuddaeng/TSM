@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head><title>Approval List</title></head>
+<body>
+<h1>Pending Student Approvals</h1>
+<table border="1">
+    {% extends 'core/base.html' %}
+{% block content %}
+<div class="max-w-5xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Pending Student Approvals</h2>
+
+    <table class="min-w-full border text-sm">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-3 text-left">Name</th>
+                <th class="p-3 text-left">Student Number</th>
+                <th class="p-3 text-left">Course</th>
+                <th class="p-3 text-left">Year</th>
+                <th class="p-3 text-left">Email Verified</th>
+                <th class="p-3 text-left">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in profiles %}
+            <tr class="border-t">
+                <td class="p-3">{{ profile.user.get_full_name }}</td>
+                <td class="p-3">{{ profile.student_number }}</td>
+                <td class="p-3">{{ profile.course }}</td>
+                <td class="p-3">{{ profile.year_level }}</td>
+                <td class="p-3">{{ profile.is_verified_email|yesno:"Yes,No" }}</td>
+                <td class="p-3 space-x-2">
+                    <a href="{% url 'core:approve_profile' profile.id %}" class="text-green-600 hover:underline">Approve</a>
+                    <a href="{% url 'core:reject_profile' profile.id %}" class="text-red-600 hover:underline">Reject</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="p-3 text-center text-gray-500">No pending profiles found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+</table>
+</body>
+</html>

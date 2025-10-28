@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Registrar - Appointment Requests</h2>
+
+<table border="1" cellpadding="5">
+  <tr><th>Student</th><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th><th>Action</th></tr>
+  {% for a in appointments %}
+  <tr>
+    <td>{{ a.student.username }}</td>
+    <td>{{ a.appointment_date }}</td>
+    <td>{{ a.appointment_time }}</td>
+    <td>{{ a.purpose }}</td>
+    <td>{{ a.status }}</td>
+    <td>
+      <a href="{% url 'core:update_appointment_status' a.id 'approved' %}">Approve</a> |
+      <a href="{% url 'core:update_appointment_status' a.id 'declined' %}">Decline</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

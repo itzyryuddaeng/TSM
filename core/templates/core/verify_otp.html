@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+<head><title>Verify OTP</title></head>
+<body>
+<h1>Verify Email</h1>
+<p>We've sent a code to {{ email }}. Check your email (or console) and enter the code.</p>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Verify</button>
+</form>
+</body>
+</html>
