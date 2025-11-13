@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set an Appointment</title>
+  <style>
+
+    body {
+      font-family: 'Poppins', sans-serif;
+
+
+      background: linear-gradient(to right, #fdf497, #fcbc73, #90d8f9);
+
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      width: 800px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .form-section {
+      background-color: #fff5d1;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input, textarea {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #999;
+      font-size: 14px;
+      outline: none;
+    }
+
+    textarea {
+      resize: none;
+      height: 40px;
+      width: 200px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #333;
+      max-width: 250px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .note.success {
+      color: #1877f2; /* ✅ Blue font when submitted */
+      font-weight: 600;
+    }
+
+    button {
+      background-color: #1877f2;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background-color: #0f5dc2;
+    }
+
+    .table-section {
+      background-color: #e3efff;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .table-section h3 {
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #fffbea;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status {
+      color: #4CAF50;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Set an Appointment</h2>
+
+    <div class="form-section">
+      <div>
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" id="date">
+        </div>
+        <div class="form-group">
+          <label for="time">Time</label>
+          <input type="time" id="time">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="purpose">Purpose</label>
+        <textarea id="purpose" placeholder="Enter purpose..."></textarea>
+      </div>
+
+      <div>
+        <!-- 👇 INITIAL MESSAGE -->
+        <p class="note" id="message">
+          Please review your details before submitting. Make sure all information is correct.
+        </p>
+        <button id="bookBtn">Book Appointment</button>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <h3>Pending Requests</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Purpose</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>10/24/2025</td>
+            <td>11:00 AM</td>
+            <td>Document submission</td>
+            <td class="status">Done</td>
+          </tr>
+          <tr>
+            <td>10/26/2025</td>
+            <td>2:30 PM</td>
+            <td>Student record update</td>
+            <td class="status">Done</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // When user clicks "Book Appointment"
+    document.getElementById("bookBtn").addEventListener("click", function() {
+      const message = document.getElementById("message");
+      message.textContent = "Your appointment request has been submitted successfully! We’ll review your details shortly.";
+      message.classList.add("success"); // Adds blue font and bold
+    });
+  </script>
+
+</body>
+</html>
